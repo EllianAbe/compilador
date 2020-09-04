@@ -1,0 +1,55 @@
+#Options
+GenerateScanner = true
+GenerateParser = true
+Language = Java
+ScannerName = Lexico
+ParserName = Sintatico
+SemanticName = Semantico
+ScannerCaseSensitive = false
+ScannerTable = Full
+Input = String
+Parser = SLR
+#RegularDefinitions
+D : [0-9]
+L : [a-zA-z]
+#Tokens
+ID: {L}+
+"="
+"+"
+"-"
+"*"
+"/"
+"("
+")"
+"=="
+"<"
+">"
+"<="
+">="
+"<>"
+NUM : {D}+
+ : [\s\t\n\r]*
+IF = ID : "IF"
+THEN = ID : "THEN"
+#NonTerminals
+<ATRIB>
+<EXP>
+<OP>
+//<CMP>
+//<IF>
+#Grammar
+<ATRIB> ::= ID "=" <EXP>;
+<EXP> ::= <EXP> <OP> <EXP>
+	| "(" <EXP> ")"
+	| ID
+	| NUM;
+<OP> ::= "+"
+	| "-"
+	| "*"
+	| "/";
+//<CMP> ::= "==" | "<"
+//	| ">"
+//	| "<="
+//	| ">="
+//	| "<>";
+//<IF> := IF <EXP> <CMP> <EXP>;
