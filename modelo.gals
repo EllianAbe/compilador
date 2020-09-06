@@ -7,14 +7,15 @@ ParserName = Sintatico
 SemanticName = Semantico
 ScannerCaseSensitive = false
 ScannerTable = Full
-Input = String
+Input = Stream
 Parser = SLR
 #RegularDefinitions
 D : [0-9]
 L : [a-zA-z]
+SIMBOL: [;]
 #Tokens
-ID: {L}+
-"="
+ID : {L}( {L} | {D} )*
+":="
 "+"
 "-"
 "*"
@@ -26,30 +27,51 @@ ID: {L}+
 ">"
 "<="
 ">="
-"<>"
+"!="
+"{"
+"}"
 NUM : {D}+
  : [\s\t\n\r]*
-IF = ID : "IF"
-THEN = ID : "THEN"
+IF = ID: "if"
+THEN = ID: "then"
+ELSE = ID: "else"
+WHILE = ID: "while"
+DO = ID: "do"
+PRINT = ID: "print"
+FOR= ID: "for"
+END: ";"
 #NonTerminals
 <ATRIB>
 <EXP>
 <OP>
-//<CMP>
-//<IF>
+<CMD>
+<CPR>
+<CMP>
+<IF>
+<IFELSE>
+<WHILE>
 #Grammar
-<ATRIB> ::= ID "=" <EXP>;
+// COMANDO COMEÇA E FINALIZA COM }
+<CMD> ::= "{" "}";
+// EXPRESSÃO
 <EXP> ::= <EXP> <OP> <EXP>
 	| "(" <EXP> ")"
 	| ID
 	| NUM;
-<OP> ::= "+"
-	| "-"
-	| "*"
-	| "/";
-//<CMP> ::= "==" | "<"
-//	| ">"
-//	| "<="
-//	| ">="
-//	| "<>";
-//<IF> := IF <EXP> <CMP> <EXP>;
+
+// OPERADORES
+<OP> ::= "+" | "-" | "*" | "/";
+
+// COMPARADORES
+<CPR> ::= "==" | "<" | "<=" | ">" | ">=" | "!=";
+
+// COMPARAÇÃO
+<CMP> ::= ID  <CPR>  ID |
+	<EXP> <CPR> NUM | NUM <CPR> <EXP>;
+
+//WHILE
+<WHILE> ::= WHILE "(" <CMP> ")" <CMD>;
+
+// IF
+<IFELSE> ::= <IF> ELSE;
+<IF> ::=  IF "(" <CMP> ")" THEN;
